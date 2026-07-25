@@ -57,9 +57,9 @@ Evaluation does not require claiming universal model quality. It creates evidenc
 
 ## Security and data governance
 
-Firebase identity defines the user boundary; the backend validates tokens and derives ownership server-side. Firestore rules and backend authorization protect user-scoped records. The Cloud Run service account, not the client, accesses privileged services with least-privilege IAM roles.
+Firebase identity defines the user boundary; the backend validates tokens and derives ownership server-side. The Cloud Run service account, not the client, accesses privileged services with least-privilege IAM roles. The backend applies user, organization, ownership, and purpose checks before it reads, writes, returns, or forwards data.
 
-Authorization is layered rather than delegated to one control: Cloud Run IAM limits which workload identities may invoke the backend; application authorization evaluates the authenticated caller's permitted actions; Firestore rules protect user-scoped records; and resource-level IAM limits what the backend service account may access. The [enterprise access model](architecture.md#enterprise-access-model) shows these boundaries together.
+Authorization is layered rather than delegated to one control: Cloud Run IAM limits which workload identities may invoke the backend; application authorization evaluates the authenticated caller's permitted actions; and resource-level IAM limits what the backend service account may access. Firestore Security Rules protect direct web/mobile client access; server-side FastAPI calls use the service account and IAM, and therefore require application-layer data authorization. The [enterprise access model](architecture.md#enterprise-access-model) shows these boundaries together.
 
 Prompts, responses, conversation history, evaluation data, and generated artifacts should be classified as application data. The platform minimizes sensitive content in logs, isolates secrets in Secret Manager, defines data-retention rules, and records security-relevant events with traceable metadata.
 

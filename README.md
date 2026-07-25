@@ -16,7 +16,7 @@ The platform gives authenticated users a consistent way to run, compare, and mea
 
 ### Platform engineering capabilities
 
-- **Secure access:** Firebase Authentication, backend token validation, Firestore security rules, IAM, and Secret Manager.
+- **Secure access:** Firebase Authentication, backend token validation, application authorization, IAM, and Secret Manager.
 - **Model policy:** typed API contracts, approved model routing, parameter validation, and provider adapters.
 - **Resilience:** timeouts, retries, fallbacks, rate limits, and circuit-breaker behavior.
 - **Observability:** structured logs, trace identifiers, error classification, and operational measurements.
@@ -76,7 +76,7 @@ app/                              FastAPI backend
   services/                        Policy, orchestration, measurement, reliability
   adapters/                        Identity, model, data, storage, observability integrations
 infra/                            Firebase, Cloud Run, IAM, Storage, observability configuration
-docs/                             Product, architecture, technical design, and planning guides
+docs/                             Product, architecture, identity, and platform-engineering guides
 tests/                            Future unit, integration, contract, and evaluation coverage
 ```
 
@@ -84,6 +84,7 @@ tests/                            Future unit, integration, contract, and evalua
 
 - [Product and roadmap](docs/product-and-roadmap.md)
 - [Architecture](docs/architecture.md)
+- [Identity and service-identity call chain](docs/identity-and-service-path.md)
 - [Platform engineering](docs/platform-engineering.md)
 
 ## Local setup

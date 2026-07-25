@@ -72,11 +72,11 @@ flowchart LR
 
 | Actor | Authentication | Authorization boundary |
 |---|---|---|
-| Enterprise user | Corporate SSO federated to Firebase Authentication | Backend derives the user identity; application authorization and Firestore rules constrain user-scoped data. |
+| Enterprise user | Corporate SSO federated to Firebase Authentication | Backend derives the user identity and applies role, organization, ownership, and purpose checks. |
 | Approved service caller | Service-account OIDC token | Cloud Run IAM grants the `Invoker` permission only to approved workload identities. |
 | Cloud Run backend | Attached service account | IAM grants only the resource-specific roles required for Vertex AI, Firestore, Storage, secrets, and observability. |
 
-Fine-grained authorization is layered: Cloud Run IAM controls who may invoke the backend; application authorization controls what an authenticated caller may do; Firestore rules and resource-level IAM constrain access to stored data and managed services.
+Fine-grained authorization is layered: Cloud Run IAM controls who may invoke the backend; application authorization controls what an authenticated caller may do; and resource-level IAM controls which managed services the backend workload can access. If a web or mobile client accesses Firestore directly, Firebase Authentication and Firestore Security Rules protect that client path. Server-side FastAPI calls use the Cloud Run service account and IAM, so the backend must enforce user, organization, ownership, and purpose checks in the application layer.
 
 ## Application layers
 
@@ -89,6 +89,19 @@ Fine-grained authorization is layered: Cloud Run IAM controls who may invoke the
 | Services | Model policy, orchestration, measurement, and reliability behavior | `app/services/` |
 | Adapters | Vertex AI, Firebase, Firestore, Storage, and observability integrations | `app/adapters/` |
 | Infrastructure | Firebase, Cloud Run, IAM, Storage, and operational configuration | `infra/` |
+
+## Reference backend service path
+
+```text
+POST /experiments
+  -> FastAPI endpoint: verify identity and validate request
+  -> Experiment service: coordinate lifecycle and persistence
+  -> Model gateway: enforce model and parameter policy
+  -> Provider adapter: invoke Vertex AI through a provider-neutral contract
+  -> Structured response: answer, tokens, cost, latency, trace ID
+```
+
+The endpoint remains thin: it authenticates, validates, and maps domain results to HTTP. Model policy, measurement, retry/fallback behavior, and persistence belong in the service and gateway layers. This follows the same separation of concerns used by the public-safe [ESP Risk Score Service](https://github.com/fmlin0429712024/industrial-operations-ai-poc/blob/main/ml/api/app.py): typed request, reusable business function, and structured response.
 
 ## Core contracts and data
 
