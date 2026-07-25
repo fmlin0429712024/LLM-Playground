@@ -66,7 +66,33 @@ In a healthcare context, PII and potential PHI require explicit data classificat
 
 The reference deployment uses Firebase Hosting for static frontend delivery and one Cloud Run container for the backend. Container configuration, environment separation, IAM bindings, storage policies, and observability configuration belong in `infra/`.
 
-As the platform matures, delivery can add artifact versioning, automated checks, deployment promotion, infrastructure-as-code, and rollback procedures. These are platform delivery controls; they do not change the core model-gateway contract.
+### Provisioning and CI/CD
+
+Provisioning prepares the approved cloud environment: projects, environments, Service Accounts, IAM, Firestore, Storage, secrets, logging, and monitoring. CI/CD builds, verifies, deploys, promotes, and rolls back application artifacts within those environments.
+
+The two controls can be separate. In a ticket-driven enterprise model, Cloud Security and platform teams provision approved resources before the application team deploys through CI/CD. In a mature platform model, infrastructure-as-code can automate provisioning through a separate or integrated pipeline.
+
+### Enterprise delivery lifecycle
+
+```text
+MVP / POC
+  -> Sandbox validation
+  -> Production design and data-access review
+  -> Environment and access provisioning
+  -> CI/CD deployment: dev -> test -> pre-production -> production
+  -> Security and operational acceptance
+  -> Monitoring, audit, access review, and change management
+```
+
+| Team | Primary responsibility |
+|---|---|
+| Application and solution architecture | Define functional behavior, data flow, workload purpose, access requirements, and acceptance criteria. |
+| Data owner and governance | Approve data use, classification, retention, and sensitive-data handling. |
+| Cloud security and platform | Provide identity, IAM guardrails, approved resource patterns, audit controls, and environment boundaries. |
+| DevOps / platform engineering | Operate deployment automation, artifact promotion, infrastructure automation, and rollback procedures. |
+| Application team | Deploy application artifacts, enforce application-layer authorization, and validate behavior in each environment. |
+
+Pre-production acceptance verifies identity flow, least-privilege workload access, data boundaries, logging behavior, error handling, and operational telemetry. These delivery controls do not change the core model-gateway contract; they make it safe to operate in an enterprise environment.
 
 ## Engineering reference
 
