@@ -58,7 +58,7 @@ The web client is deployed as static content through Firebase Hosting; it does n
 | Application data | Firestore, Cloud Storage | User-scoped records and controlled artifacts |
 | Security and operations | IAM, Secret Manager, Cloud Logging, Trace | Least-privilege access, secrets, auditability, and telemetry |
 
-The [Google Cloud foundation guide](docs/google-cloud-foundation.md) explains the identity, authorization, storage, security, and operational design.
+The [architecture](docs/architecture.md) and [platform engineering](docs/platform-engineering.md) guides explain the identity, authorization, storage, security, and operational design.
 
 ## Project structure
 
@@ -82,12 +82,9 @@ tests/                            Future unit, integration, contract, and evalua
 
 ## Documentation
 
-- [Architecture and service responsibilities](docs/architecture.md)
-- [Google Cloud foundation](docs/google-cloud-foundation.md)
-- [Product requirements](docs/product-requirements.md)
-- [Technical design](docs/technical-design.md)
-- [Engineering reference](docs/knowledge-gap-cheatsheet.md)
-- [Implementation plan](docs/plan.md)
+- [Product and roadmap](docs/product-and-roadmap.md)
+- [Architecture](docs/architecture.md)
+- [Platform engineering](docs/platform-engineering.md)
 
 ## Local setup
 

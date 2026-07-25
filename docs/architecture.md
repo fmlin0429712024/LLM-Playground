@@ -1,57 +1,80 @@
 # Architecture
 
-## Purpose
+## System view
 
-The platform separates application concerns from model-provider concerns so that model selection, measurement, and reliability behavior are consistent across approved models.
+```mermaid
+flowchart TB
+    BROWSER[Browser]
 
-## Request flow
+    subgraph CLOUD[Google Cloud]
+        subgraph APP[Application Deployment]
+            UI[Firebase Hosting<br/>Web Client]
+            API[Cloud Run<br/>FastAPI API and Model Gateway<br/>Service Account]
+        end
+        AUTH[Firebase Authentication]
+        MODEL[Vertex AI<br/>Gemini and Approved Models]
+        DATA[(Firestore<br/>Conversations and Experiments)]
+        FILES[(Cloud Storage<br/>Evaluation Artifacts)]
+    end
 
-```text
-Client
-  -> Firebase Authentication
-  -> Cloud Run / FastAPI API (identity validation and request contract)
-  -> Model gateway (policy, routing, measurement)
-  -> Provider adapter (Vertex AI / Gemini)
-  -> Structured response and telemetry
+    BROWSER --> UI
+    UI --> AUTH
+    UI -->|Authenticated request| API
+    API --> MODEL
+    API --> DATA
+    API --> FILES
 ```
 
 ## Deployment boundary
 
-The initial deployment topology has Firebase Hosting for the static web client and one backend container: a Cloud Run service containing the FastAPI API and model gateway. Firebase Hosting does not require a user-managed container. The Cloud Run service keeps the API contract, model-routing policy, response measurement, and provider adapter in one independently deployable service.
+Firebase Hosting delivers the static web client and does not require a user-managed container. One Cloud Run service contains the FastAPI API and model gateway. This boundary keeps request validation, model policy, response measurement, reliability behavior, and provider adapters together in one independently deployable backend.
 
-Firebase Authentication is used by the web client for sign-in. The Cloud Run service validates Firebase ID tokens and uses its attached service account for server-side access to Google Cloud services. The service account receives only the IAM permissions needed for Vertex AI, Firestore, Cloud Storage, Secret Manager, and observability services.
+The browser never receives provider credentials or privileged Google Cloud permissions. The Cloud Run service uses an attached service account with narrowly scoped IAM access to Vertex AI, Firestore, Cloud Storage, Secret Manager, and observability services.
 
-The web client is delivered to the browser through Firebase Hosting and is separate from the backend runtime. It is not trusted with provider credentials or privileged Google Cloud permissions.
+## Request and identity flow
 
-## Service responsibilities
+1. The user signs in through Firebase Authentication.
+2. The web client sends a Firebase ID token with the API request.
+3. FastAPI validates the token and derives the user identity server-side.
+4. The model gateway applies policy, calls the approved Vertex AI model, and measures the request.
+5. The API returns generated content plus model, token, cost, latency, trace, and error metadata.
+6. Firestore stores user-scoped conversations and experiments; Cloud Storage stores controlled artifacts.
 
-| Component | Responsibility |
+## Application layers
+
+| Layer | Responsibility | Workspace location |
+|---|---|---|
+| Frontend | Sign-in, experiment input, comparison, and result presentation | `frontend/` |
+| API | HTTP routing, authentication boundary, validation, response serialization | `app/api/` |
+| Core | Settings, security, shared error handling, and trace context | `app/core/` |
+| Domain | Provider-neutral contracts for models, experiments, telemetry, and evaluation | `app/domain/` |
+| Services | Model policy, orchestration, measurement, and reliability behavior | `app/services/` |
+| Adapters | Vertex AI, Firebase, Firestore, Storage, and observability integrations | `app/adapters/` |
+| Infrastructure | Firebase, Cloud Run, IAM, Storage, and operational configuration | `infra/` |
+
+## Core contracts and data
+
+An experiment request contains authenticated identity, a selected approved model configuration, a prompt, generation settings, and optional comparison metadata. An experiment response contains generated content, selected model/configuration, input/output token usage, estimated cost, provider/end-to-end latency, trace identifier, and classified error information when applicable.
+
+Firestore stores user-scoped conversations, experiment records, evaluation results, and audit events. Each record has an owner, timestamps, and an experiment or trace identifier where relevant. Cloud Storage holds controlled evaluation datasets and generated artifacts.
+
+## Google Cloud responsibilities
+
+| Service | Responsibility |
 |---|---|
-| Web client | Sign-in, experiment input, result presentation |
-| Firebase Authentication | User identity and ID tokens |
-| FastAPI API | Token validation, typed API boundary, response contract |
-| Model gateway | Model policy, parameter validation, token/cost/latency measurement |
-| Provider adapter | Provider-specific request and response translation |
-| Firestore | User-scoped conversations, experiments, evaluations, audit events |
-| Cloud Storage | Controlled evaluation artifacts and approved application files |
-
-## Response contract
-
-Every model response should return the generated content and the measurements needed for comparison:
-
-- selected model and configuration;
-- input and output token usage;
-- estimated cost;
-- provider and end-to-end latency;
-- trace identifier and error classification when applicable.
-
-## Operational controls
-
-Provider calls are governed by explicit timeout, retry, fallback, rate-limit, and circuit-breaker policies. The gateway records structured events so failures can be correlated by trace identifier without recording sensitive prompt content unnecessarily.
+| Firebase Authentication | User sign-in and ID tokens |
+| Firebase Hosting | Static web-client delivery |
+| Cloud Run | FastAPI API, model gateway, and backend runtime identity |
+| Vertex AI | Governed Gemini and approved-model access |
+| Firestore | User-scoped operational data |
+| Cloud Storage | Controlled files and evaluation artifacts |
+| IAM and Secret Manager | Least-privilege access and runtime secret isolation |
+| Cloud Logging and Trace | Structured operational events and request correlation |
 
 ## References
 
-- [FastAPI documentation](https://fastapi.tiangolo.com/)
-- [Firebase Authentication documentation](https://firebase.google.com/docs/auth)
-- [Cloud Firestore documentation](https://firebase.google.com/docs/firestore)
-- [OpenTelemetry documentation](https://opentelemetry.io/docs/)
+- [Firebase Authentication](https://firebase.google.com/docs/auth)
+- [Cloud Firestore](https://firebase.google.com/docs/firestore)
+- [Vertex AI documentation](https://cloud.google.com/vertex-ai/docs)
+- [Cloud Run documentation](https://cloud.google.com/run/docs)
+- [Google Cloud IAM](https://cloud.google.com/iam/docs)
