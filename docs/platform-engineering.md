@@ -43,6 +43,8 @@ Firebase identity defines the user boundary; the backend validates tokens and de
 
 Prompts, responses, conversation history, evaluation data, and generated artifacts should be classified as application data. The platform minimizes sensitive content in logs, isolates secrets in Secret Manager, defines data-retention rules, and records security-relevant events with traceable metadata.
 
+In a healthcare context, PII and potential PHI require explicit data classification and approved handling controls before production use. This affects identity design, data access, logging, retention, vendor review, and audit expectations; it is a design input rather than an automatic compliance claim.
+
 ## Delivery and operational readiness
 
 The reference deployment uses Firebase Hosting for static frontend delivery and one Cloud Run container for the backend. Container configuration, environment separation, IAM bindings, storage policies, and observability configuration belong in `infra/`.

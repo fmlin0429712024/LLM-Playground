@@ -52,6 +52,13 @@ LLM Platform Engineering Lab is a secure, Google Cloud-based playground for auth
 - Telemetry minimizes sensitive prompt and response content.
 - The initial deployment uses a static frontend and a single Cloud Run backend service.
 
+## Enterprise operating context
+
+- Federate enterprise SSO to the application identity layer and validate identity at the API boundary.
+- Use separate user and workload identities; Cloud Run service accounts receive only the permissions required for their runtime responsibility.
+- Separate environments, configurations, secrets, data access, and audit records by approved enterprise controls.
+- Treat PII and potential PHI as sensitive data. Production healthcare use requires a formal data-classification, privacy, security, and compliance review; this reference does not claim HIPAA compliance.
+
 ## Delivery roadmap
 
 ### Foundation
