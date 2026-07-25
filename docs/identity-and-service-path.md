@@ -26,7 +26,7 @@ sequenceDiagram
     U->>I: Sign in
     I-->>W: Firebase ID token
     W->>A: POST /experiments + ID token + typed request
-    A->>A: Verify token; derive user identity; authorize request
+    A->>A: Verify token, derive user identity, authorize request
     A->>S: Use attached runtime identity
     S->>V: IAM-authorized model invocation
     V-->>A: Generated result and usage metadata
