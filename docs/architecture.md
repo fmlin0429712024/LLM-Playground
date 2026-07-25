@@ -40,6 +40,44 @@ The browser never receives provider credentials or privileged Google Cloud permi
 5. The API returns generated content plus model, token, cost, latency, trace, and error metadata.
 6. Firestore stores user-scoped conversations and experiments; Cloud Storage stores controlled artifacts.
 
+## Enterprise access model
+
+```mermaid
+flowchart LR
+    USER[Enterprise User]
+    IDP[Corporate Identity Provider]
+    AUTH[Firebase Authentication]
+    CALLER[Approved Service Caller]
+
+    subgraph CLOUD[Google Cloud]
+        API[Cloud Run API]
+        SA[Cloud Run Service Account]
+        VERTEX[Vertex AI]
+        FIRESTORE[(Firestore)]
+        STORAGE[(Cloud Storage)]
+        SECRETS[Secret Manager]
+    end
+
+    USER --> IDP --> AUTH
+    AUTH -->|User ID token| API
+    CALLER -->|Service-account OIDC token<br/>Cloud Run Invoker| API
+    API --> SA
+    SA -->|IAM-authorized access| VERTEX
+    SA -->|IAM-authorized access| FIRESTORE
+    SA -->|IAM-authorized access| STORAGE
+    SA -->|IAM-authorized access| SECRETS
+```
+
+### Identity and authorization boundaries
+
+| Actor | Authentication | Authorization boundary |
+|---|---|---|
+| Enterprise user | Corporate SSO federated to Firebase Authentication | Backend derives the user identity; application authorization and Firestore rules constrain user-scoped data. |
+| Approved service caller | Service-account OIDC token | Cloud Run IAM grants the `Invoker` permission only to approved workload identities. |
+| Cloud Run backend | Attached service account | IAM grants only the resource-specific roles required for Vertex AI, Firestore, Storage, secrets, and observability. |
+
+Fine-grained authorization is layered: Cloud Run IAM controls who may invoke the backend; application authorization controls what an authenticated caller may do; Firestore rules and resource-level IAM constrain access to stored data and managed services.
+
 ## Application layers
 
 | Layer | Responsibility | Workspace location |

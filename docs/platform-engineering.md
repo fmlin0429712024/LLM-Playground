@@ -41,6 +41,8 @@ Evaluation does not require claiming universal model quality. It creates evidenc
 
 Firebase identity defines the user boundary; the backend validates tokens and derives ownership server-side. Firestore rules and backend authorization protect user-scoped records. The Cloud Run service account, not the client, accesses privileged services with least-privilege IAM roles.
 
+Authorization is layered rather than delegated to one control: Cloud Run IAM limits which workload identities may invoke the backend; application authorization evaluates the authenticated caller's permitted actions; Firestore rules protect user-scoped records; and resource-level IAM limits what the backend service account may access. The [enterprise access model](architecture.md#enterprise-access-model) shows these boundaries together.
+
 Prompts, responses, conversation history, evaluation data, and generated artifacts should be classified as application data. The platform minimizes sensitive content in logs, isolates secrets in Secret Manager, defines data-retention rules, and records security-relevant events with traceable metadata.
 
 In a healthcare context, PII and potential PHI require explicit data classification and approved handling controls before production use. This affects identity design, data access, logging, retention, vendor review, and audit expectations; it is a design input rather than an automatic compliance claim.
