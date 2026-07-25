@@ -11,7 +11,7 @@ flowchart TB
             UI[Firebase Hosting<br/>Web Client]
             API[Cloud Run<br/>FastAPI API and Model Gateway<br/>Service Account]
         end
-        AUTH[Firebase Authentication]
+        AUTH[Firebase Authentication<br/>Enterprise SSO]
         MODEL[Vertex AI<br/>Gemini and Approved Models]
         DATA[(Firestore<br/>Conversations and Experiments)]
         FILES[(Cloud Storage<br/>Evaluation Artifacts)]
@@ -33,8 +33,8 @@ The browser never receives provider credentials or privileged Google Cloud permi
 
 ## Request and identity flow
 
-1. The user signs in through Firebase Authentication.
-2. The web client sends a Firebase ID token with the API request.
+1. The user signs in through an enterprise identity provider federated to Firebase Authentication.
+2. The web client sends the resulting Firebase ID token with the API request.
 3. FastAPI validates the token and derives the user identity server-side.
 4. The model gateway applies policy, calls the approved Vertex AI model, and measures the request.
 5. The API returns generated content plus model, token, cost, latency, trace, and error metadata.
@@ -62,7 +62,7 @@ Firestore stores user-scoped conversations, experiment records, evaluation resul
 
 | Service | Responsibility |
 |---|---|
-| Firebase Authentication | User sign-in and ID tokens |
+| Firebase Authentication and enterprise SSO | Federated user sign-in and ID tokens |
 | Firebase Hosting | Static web-client delivery |
 | Cloud Run | FastAPI API, model gateway, and backend runtime identity |
 | Vertex AI | Governed Gemini and approved-model access |

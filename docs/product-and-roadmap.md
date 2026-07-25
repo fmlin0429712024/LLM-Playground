@@ -36,7 +36,7 @@ LLM Platform Engineering Lab is a secure, Google Cloud-based playground for auth
 
 | Area | Capability |
 |---|---|
-| Identity | Authenticate users and validate identity at the backend API boundary. |
+| Identity | Support federated enterprise SSO and validate user identity at the backend API boundary. |
 | Model access | Route a typed request to an approved Vertex AI model configuration. |
 | Experimentation | Support model and generation-parameter selection for comparable runs. |
 | Measurement | Capture input/output tokens, estimated cost, provider latency, and end-to-end latency. |
