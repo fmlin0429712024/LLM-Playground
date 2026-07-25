@@ -19,6 +19,19 @@ LLM Platform Engineering Lab is a secure, Google Cloud-based playground for auth
 4. The user reviews answer content, token usage, estimated cost, latency, and error information.
 5. The platform stores the user-scoped experiment and its measurements for later comparison.
 
+## Basic playground experience
+
+| Capability | Product behavior |
+|---|---|
+| Chat workspace | Submit prompts and review responses in a conversational interface. |
+| Model selection | Select an approved Gemini or open-model configuration. |
+| Generation controls | Set temperature, top-p, top-k, output-token limit, and system instruction. |
+| Response telemetry | Display input/output tokens, estimated cost, and response latency. |
+| Comparison | Compare the same prompt across selected models or configurations. |
+| History | Review user-scoped conversations and prior experiments. |
+| Analytics | View basic usage, model, token, cost, and latency summaries. |
+| Multimodal extension | Support voice input and voice output as a later interaction mode. |
+
 ## Functional scope
 
 | Area | Capability |
