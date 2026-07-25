@@ -1,5 +1,20 @@
 # Platform Engineering
 
+## Scope in an enterprise AI stack
+
+This project addresses the LLM platform and inference layer: secure model access, model policy, measurable invocation, provider resilience, and model-quality evaluation. A companion [Customer Care Agents showcase](https://github.com/fmlin0429712024/customer-care-agents) addresses the agent workflow layer: multi-step orchestration, tool use, state, business guardrails, and human escalation.
+
+The layers share engineering principles but do not observe or govern the same unit of work.
+
+| Topic | LLM platform and inference layer | Agent workflow layer |
+|---|---|---|
+| Observability | Model, parameters, tokens, cost, latency, provider errors, fallback | Workflow steps, state, tool calls, handoffs, and business outcome |
+| Evaluation | Prompt/output quality, format, latency, cost, and model comparison | Task completion, tool correctness, policy compliance, and escalation decisions |
+| Reliability | Provider timeout, quota, retry, fallback, and circuit breaker | Workflow recovery, state durability, idempotency, and human escalation |
+| Governance | Model access, parameter policy, data handling, and cost boundaries | Tool permissions, business guardrails, approval, and human-in-the-loop controls |
+
+This repository deliberately retains the LLM-platform column and does not duplicate agent orchestration or business-workflow controls.
+
 ## Model policy and experiment control
 
 The model gateway owns approved model selection, generation-parameter validation, provider routing, and response normalization. A caller chooses from policy-approved configurations rather than passing arbitrary provider settings. This makes comparison reproducible and keeps provider-specific behavior inside adapters.
