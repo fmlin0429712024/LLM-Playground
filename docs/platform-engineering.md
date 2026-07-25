@@ -4,14 +4,17 @@
 
 This project addresses the LLM platform and inference layer: secure model access, model policy, measurable invocation, provider resilience, and model-quality evaluation. A companion [Customer Care Agents showcase](https://github.com/fmlin0429712024/customer-care-agents) addresses the agent workflow layer: multi-step orchestration, tool use, state, business guardrails, and human escalation.
 
-The layers share engineering principles but do not observe or govern the same unit of work.
+The layers share an enterprise foundation but do not observe or govern the same unit of work.
 
-| Topic | LLM platform and inference layer | Agent workflow layer |
-|---|---|---|
-| Observability | Model, parameters, tokens, cost, latency, provider errors, fallback | Workflow steps, state, tool calls, handoffs, and business outcome |
-| Evaluation | Prompt/output quality, format, latency, cost, and model comparison | Task completion, tool correctness, policy compliance, and escalation decisions |
-| Reliability | Provider timeout, quota, retry, fallback, and circuit breaker | Workflow recovery, state durability, idempotency, and human escalation |
-| Governance | Model access, parameter policy, data handling, and cost boundaries | Tool permissions, business guardrails, approval, and human-in-the-loop controls |
+| Topic | Traditional application | LLM platform and Playground | Agent workflow solution |
+|---|---|---|---|
+| Primary concern | Deterministic business APIs and data processing | Governed model invocation and comparison | Business-task execution through skills and tools |
+| Core logic | Business rules, APIs, and database operations | Model policy, context, provider adapter, and response measurement | Orchestration, skills, state, tool calls, and workflow decisions |
+| Observability | API, database, and infrastructure errors | Model, parameters, tokens, cost, latency, provider errors, and fallback | Workflow steps, state, tool calls, handoffs, and business outcome |
+| Evaluation | Functional correctness and integration behavior | Prompt/output quality, format, latency, cost, and model comparison | Task completion, tool correctness, policy compliance, and escalation decisions |
+| Reliability | Application, database, and network recovery | Provider timeout, quota, retry, fallback, and circuit breaker | Workflow recovery, state durability, idempotency, and human escalation |
+| Governance | User access, service access, and data permissions | Model access, parameter policy, context data handling, and cost boundaries | Tool permissions, business guardrails, approval, and human-in-the-loop controls |
+| Deployment | Cloud runtime and data services | Cloud Run or Vertex AI with a model gateway | Cloud Run or Vertex AI Agent Platform with an agent runtime |
 
 This repository deliberately retains the LLM-platform column and does not duplicate agent orchestration or business-workflow controls.
 
