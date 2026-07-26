@@ -34,6 +34,18 @@ sequenceDiagram
     A-->>W: Structured result, cost, latency, trace ID
 ```
 
+## One request, three parallel concerns
+
+There is no conversion from a user identity into a service account. The request carries a signed user token to the API, while Cloud Run already has a service account attached to the running workload.
+
+| Concern | What travels or is used | Where the decision is made |
+|---|---|---|
+| **User identity** | The browser sends a short-lived Firebase ID token over HTTPS. FastAPI verifies it and derives trusted user, organization, and role claims. | FastAPI application authorization: may this user perform this action or access this record? |
+| **Workload identity** | Cloud Run uses its pre-attached service account when the API calls Google Cloud resources. | Google Cloud IAM: may this workload call this model, database, bucket, secret, or key? |
+| **Sensitive data protection** | PHI or PII is application data, not identity-token content. It is minimized, redacted from logs, encrypted in transit and at rest, and may require masking or approved decryption. | Application policy, data-governance controls, and where applicable Cloud KMS permissions. |
+
+The same request can therefore retain a verified user context for ownership and audit while the backend uses its separate service account for cloud access. The service account does not replace the user identity.
+
 ## The two identity lanes
 
 | Lane | Identity | What it controls | What it must not control |
