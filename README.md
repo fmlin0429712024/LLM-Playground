@@ -2,6 +2,28 @@
 
 A secure, observable multi-model experimentation platform on Google Cloud. This independent reference implementation reconstructs and extends patterns from an LLM Playground initiative completed for DaVita in January–February 2026.
 
+## Overview
+
+**A secure, observable multi-model experimentation platform on Google Cloud —
+an independent reconstruction of the platform-engineering patterns behind an
+LLM Playground I built for DaVita (January–February 2026).**
+
+> Background: DaVita needed a controlled way for internal users to run,
+> compare, and measure approved language models without every team
+> re-solving auth, cost tracking, and provider integration on its own. This
+> repo reconstructs that platform's engineering shape as a standalone,
+> client-data-free reference implementation.
+
+**Why a platform layer instead of direct API calls:** once more than one
+model/provider is in play, security (auth, IAM), cost/latency measurement,
+and resilience (retries, fallbacks, rate limits) become cross-cutting
+concerns that duplicate per team if left inside individual apps; centralizing
+them behind one gateway keeps model access consistent and auditable.
+
+**Core approach:** a FastAPI model gateway on Cloud Run sits behind Firebase
+Authentication and enforces typed, approved-model routing, while Firestore
+and Cloud Storage hold experiment history and evaluation artifacts.
+
 ## Platform scope
 
 The platform gives authenticated users a consistent way to run, compare, and measure approved language models. It keeps application policy, security, data ownership, and provider-specific integration separate.
